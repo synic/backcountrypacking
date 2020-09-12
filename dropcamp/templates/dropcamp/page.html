@@ -1,0 +1,34 @@
+{% extends 'dropcamp/base.html' %}
+{% load markup %}
+{% load thumbnail %}
+{% load dcimages %}
+
+{% block content %}
+<div id='text_title'>{{ page.title }}</div>
+<div id='left_content'>
+	{% thumbnail page.large_image.image "371x241" crop="center" as im %}
+		<img src='{{ im.url }}' width="{{ im.width }}" height="{{ im.height }}" class='large_image'
+			alt="Landscape Image"><br>
+	{% endthumbnail %}
+	<div id="small_images">
+		{% include "dropcamp/small_image.html" with image=page.small_image_1 name="si1" %}
+		{% include "dropcamp/small_image.html" with image=page.small_image_2 name="si2" %}
+		{% include "dropcamp/small_image.html" with image=page.small_image_3 name="si3" %}
+	</div>
+</div>
+	<div id='text_block'>
+		{{ page.text|textile|safe }}
+	</div>
+
+<div id='hoverimage'>
+	{% thumbnail page.large_image.image "450" as im %}
+		<img src="{{ im.url }}" id="hoverimage_img" width="{{ im.width }}" height="{{ im.height }}" alt="Landscape Image">
+	{% endthumbnail %}
+</div>
+
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type='text/javascript' src='{{ STATIC_URL }}/js/hoverimg.js'></script>
+{% endblock %}

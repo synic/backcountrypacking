@@ -1,0 +1,158 @@
+body {
+    background: black;
+    margin-top: 40px;
+    color: #ccc;
+    font-size: 14px;
+    font-family: Arial, Sans;
+}
+
+a, a.visited {
+    color: lightgreen;
+}
+
+
+#main {
+    width: 960px;
+}
+
+#main, #footer, .link_menu, #content, #logo {
+    margin-left: auto;
+    margin-right: auto;
+    width: 960px;
+}
+
+.link_menu, #logo {
+    text-align: center;
+}
+
+#logo {
+    color: #ccc;
+    font-family: 'Sigmar One', cursive;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.link_menu, .link_menu a {
+    font-size: 18px;
+    color: #ccc;
+    text-decoration: none;
+}
+
+.link_menu a:hover {
+    text-decoration: underline;
+}
+
+#content {
+}
+
+#left_content {
+    float: left;
+    margin-right: 10px;
+}
+
+#text_title {
+    color: #764734;
+    font-size: 29px;
+    margin-bottom: 5px;
+    text-align: left;
+    font-family: 'Sigmar One', cursive;
+}
+
+#header {
+    margin-bottom: 10px;
+}
+
+#footer {
+    clear: both;
+    padding-top: 10px;
+}
+
+#footer hr {
+    width: 100%;
+    border: 1px solid #aaa;
+    margin-bottom: 20px;
+}
+
+.large_image {
+    margin-bottom: 2px;
+}
+
+#small_images img {
+    vertical-align: top;
+}
+
+#right_content {
+    float:left;
+    min-height: 337px;
+    text-align: left; 
+    width: 250px;
+    vertical-align: top;
+}
+
+#text_block {
+    background: black;
+    color: #ccc;
+    font-family: Arial,serif;
+    padding: 0 10px 0 2px;
+}
+
+#text_block p {
+    margin: 0 0 10px 0;
+    padding: 5px 0;
+}
+
+#text_block h2 {
+    font-size: 14.5pt;
+    margin: 0 0 10px 0;
+}
+
+p.emphasis {
+    font-style: italic;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+p.sig{
+    font-weight: bold;
+    text-align: right;
+    margin-bottom: 0px;
+}
+
+#hoverimage {
+    position: absolute;
+    display: none;
+    padding: 20px;
+    background: grey;
+}
+
+.errorlist {
+    margin: 4px;
+    padding: 0px;
+    list-style-type: none;
+}
+
+.errorlist li {
+    display: block;
+    background: maroon;
+    padding: 4px;
+    color: white;
+    font-weight: bold;
+}
+
+.messages {
+    margin: -20px auto 10px auto;
+    padding: 0px;
+    list-style-type: none;
+    width: 960px;
+}
+
+.messages li {
+  position: relative;
+  padding: 7px 15px;
+  margin-bottom: 18px;
+  color: #404040;
+  background-color: #eedc94;
+  border-color: #eedc94 #eedc94 #e4c652;
+  border-width: 1px;
+  border-style: solid;
+}

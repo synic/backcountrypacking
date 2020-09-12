@@ -1,0 +1,8 @@
+*.pyc
+*.pyo
+local_settings.py
+database.db
+dcimages
+media/
+static/
+.venv

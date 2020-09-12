@@ -1,0 +1,6 @@
+<div class='link_menu'>
+	{% for link in page_links %}
+		<a href='{{ link.url }}' title='{{ link.title }}'>{{ link.name }}</a>
+		{% if not forloop.last %} |{% endif %}
+	{% endfor %}
+</div>

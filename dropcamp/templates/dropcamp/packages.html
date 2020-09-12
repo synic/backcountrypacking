@@ -1,0 +1,27 @@
+{% extends 'dropcamp/base.html' %}
+{% load chunks %}
+{% load aoutils %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/packages.css">
+{% endblock %}
+
+{% block content %}
+<div id='text_title'>{% block packages_type_description %}{% chunk 'packages_description' %}{% endblock %}</div>
+
+<table id='packages_table' width='100%' border='0' cellpadding='5' cellspacing='0'>
+{% for row in object_list|tablerows:'2' %}
+	<tr>
+	{% for item in row %}
+		{% if item %}
+			{% include 'dropcamp/package_item.html' %}
+		{% else %}
+			<td colspan='2'>&nbsp;</td>
+		{% endif %}
+	{% endfor %}
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock content %}

@@ -1,0 +1,61 @@
+{% extends 'dropcamp/base.html' %}
+{% load markup %}
+{% load thumbnail %}
+{% load aoutils %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/colorbox/colorbox.css">
+<script type='text/javascript' src="{{ STATIC_URL }}/js/jquery.colorbox-min.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/packages.css">
+<script type='text/javascript'>
+$(function() {
+	$('a.photogroup').colorbox({
+		rel:"photogroup", 
+		scalePhotos: true, 
+		maxWidth: 1024,
+		slideshow: true,
+		slideshowSpeed: 5000,
+		slideshowAuto: true
+		});
+});
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div id='text_title'>{{ package.name }}</div>
+<div id='package_left_content'>
+{% thumbnail package.first_image.image "300" as im %}
+	<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" 
+		alt="{{ package.title }}" class="package_first_image">
+{% endthumbnail %}
+</div>
+<div id='package_right_content'>
+	{{ package.description|textile|safe }}
+</div>
+<div id='package_image_container'>
+	<p id='image_top'>Images - click on an image to view a larger version:</p>
+	{% if package.image_set.count %}
+		<table class='package_images' cellspacing='0'>
+			{% for row in package.image_set.all|tablerows:'6' %}
+				<tr>
+					{% for item in row %}
+						<td>
+							{% if item %}
+								{% thumbnail item.image "150" as im %}
+									<a href="{{ item.image.url }}" class="photogroup" title="{% if item.title %}{{ item.title }}{% endif %}">
+										<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" border="0" alt="{{ item.title }}">
+									</a>
+								{% endthumbnail %}
+							{% else %}
+								&nbsp;
+							{% endif %}
+						</td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
+</div>
+{% endblock %}

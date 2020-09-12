@@ -1,0 +1,8 @@
+{% load thumbnail %}
+{% if image %}
+	{% thumbnail image.image "121x91" crop="center" as im %}
+		<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class="small_image" id="{{ name }}" 
+			alt="Landscape Image">
+	{% endthumbnail %}
+	<input type="hidden" id="{{ name }}_url" style="display: none; position: absolute;" value="{{ image.image.url }}">
+{% endif %}
