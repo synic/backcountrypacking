@@ -108,7 +108,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_markup',
     'aolib',
-    'dragorder',
     'chunks',
     'sorl.thumbnail',
     'dropcamp',

@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django import forms
-from dragorder.admin import OrderableStackedInline
 from . import models
 
 class PageAdmin(admin.ModelAdmin):
