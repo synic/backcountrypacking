@@ -1,14 +1,17 @@
 from django.views.generic import DetailView
-from django.conf.urls.defaults import url, patterns
+from django.urls import re_path
 from . import models
 from . import views
 
-urlpatterns = patterns('dropcamp.views',
-    url(r'^contact/$', views.ContactView.as_view(), name='contact'),
-    url(r'^(?P<package_type>areas|packages)/$', 
+app_name = 'dropcamp'
+
+urlpatterns = [
+    re_path(r'^contact/$', views.ContactView.as_view(), name='contact'),
+    re_path(r'^(?P<package_type>areas|packages)/$',
         views.PackagesView.as_view(), name='packages'),
-    url(r'^p/(?P<slug>[\w-]+)/$',
+    re_path(r'^(?P<path>\w+)/$', views.viewpage, name='page'),
+    re_path(r'^p/(?P<slug>[\w-]+)/$',
         DetailView.as_view(
             model=models.Package),
         name='viewpackage'),
-)
+]

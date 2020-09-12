@@ -1,8 +1,9 @@
 from django import template
 from django.db import models
 
+from dropcamp.models import Image
+
 register = template.Library()
-Image = models.get_model('dropcamp', 'image')
 
 class ImageNode(template.Node):
     def __init__(self, name, item_name, nodelist):

@@ -11,6 +11,7 @@ admin.site.register(models.Page, PageAdmin)
 class ImageForm(forms.ModelForm):
     class Meta:
         model = models.Image
+        exclude = ()
 
     def clean_name(self):
         name = self.cleaned_data['name']
@@ -42,12 +43,12 @@ admin.site.register(models.Package, PackageAdmin)
 class LinkAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'title', 'url', 'position')
     list_editable = ('position', 'name', 'title', 'url')
-    
+
     class Media:
         js = (
             'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js',
             'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js',
-            'static/admin_list_ordering.js', 
+            'static/admin_list_ordering.js',
         )
 
 admin.site.register(models.Link, LinkAdmin)

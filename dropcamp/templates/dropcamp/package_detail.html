@@ -1,5 +1,5 @@
 {% extends 'dropcamp/base.html' %}
-{% load markup %}
+{% load markup_tags %}
 {% load thumbnail %}
 {% load aoutils %}
 
@@ -32,7 +32,7 @@ $(function() {
 {% endthumbnail %}
 </div>
 <div id='package_right_content'>
-	{{ package.description|textile|safe }}
+	{{ package.description|apply_markup:'textile'|safe }}
 </div>
 <div id='package_image_container'>
 	<p id='image_top'>Images - click on an image to view a larger version:</p>

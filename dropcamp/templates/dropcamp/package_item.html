@@ -1,12 +1,12 @@
 {% load thumbnail %}
-<td class='package_cell_1' width='180' onclick="location='{% url dc:viewpackage slug=item.slug %}';">
+<td class='package_cell_1' width='180' onclick="location='{% url "dc:viewpackage" slug=item.slug %}';">
 	{% thumbnail item.first_image.image "180x122" as im %}
 		<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" 
 			alt="{{ item.title }}" align="left" class="package_first_image">
 	{% endthumbnail %}
 </td>
-<td class='package_cell_2' width='232' onclick="location='{% url dc:viewpackage slug=item.slug %}';">
+<td class='package_cell_2' width='232' onclick="location='{% url "dc:viewpackage" slug=item.slug %}';">
 	<h3>{{ item.name }}</h3>
 	<p>{{ item.title }}</p>
-	<p><a href='{% url dc:viewpackage slug=item.slug %}'>More information...</a></p>
+	<p><a href='{% url "dc:viewpackage" slug=item.slug %}'>More information...</a></p>
 </td>

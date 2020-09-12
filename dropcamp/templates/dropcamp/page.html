@@ -1,7 +1,8 @@
 {% extends 'dropcamp/base.html' %}
-{% load markup %}
+{% load markup_tags %}
 {% load thumbnail %}
 {% load dcimages %}
+{% load static %}
 
 {% block content %}
 <div id='text_title'>{{ page.title }}</div>
@@ -17,7 +18,7 @@
 	</div>
 </div>
 	<div id='text_block'>
-		{{ page.text|textile|safe }}
+		{{ page.text|apply_markup:'textile'|safe }}
 	</div>
 
 <div id='hoverimage'>
@@ -30,5 +31,5 @@
 
 {% block extrahead %}
 {{ block.super }}
-<script type='text/javascript' src='{{ STATIC_URL }}/js/hoverimg.js'></script>
+    <script type='text/javascript' src='{% static "/js/hoverimg.js" %}'></script>
 {% endblock %}

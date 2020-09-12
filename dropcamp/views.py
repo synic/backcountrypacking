@@ -1,6 +1,5 @@
-from django.views.generic.simple import direct_to_template
-from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, FormView
 from django.contrib import messages
 from django import http
@@ -12,9 +11,9 @@ import re
 
 def viewpage(request, path):
     path = re.sub(r'[^a-zA-Z0-9-]', '', path)
-    page = get_object_or_404(models.Page, url=path) 
+    page = get_object_or_404(models.Page, url=path)
 
-    return direct_to_template(request, 'dropcamp/page.html', {
+    return render(request, 'dropcamp/page.html', {
         'page': page,
     })
 

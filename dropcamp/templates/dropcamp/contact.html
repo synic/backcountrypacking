@@ -2,11 +2,12 @@
 {% load dcimages %}
 {% load thumbnail %}
 {% load chunks %}
+{% load static %}
 
 {% block extrahead %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/contact.css" />
-<script type='text/javascript' src='{{ STATIC_URL }}/js/hoverimg.js'></script>
+<link rel="stylesheet" type="text/css" href="{% static "/css/contact.css" %}" />
+    <script type='text/javascript' src='{% static "/js/hoverimg.js" %}'></script>
 {% endblock %}
 
 {% block content %}

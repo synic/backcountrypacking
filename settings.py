@@ -7,6 +7,11 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
+ALLOWED_HOSTS = [
+    "backcountrypacking.com",
+    "www.backcountrypacking.com",
+]
+
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -60,62 +65,57 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'aayjjd6(jq#)58w2d^7k&)9)z&7foooqti!nk_o*k^0w(pf@ah'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.app_directories.Loader',
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.eggs.Loader',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.request',
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.contrib.messages.context_processors.messages',
-    'dropcamp.context_processors.link',
-)
-
 STATICFILES_DIRS = (
     '/var/www/backcountrypacking/staticfiles',
 )
 
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'dropcamp.middleware.PageFallbackMiddleware',
-)
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
 ROOT_URLCONF = 'backcountrypacking.urls'
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': ['/var/www/backcountrypacking/templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'dropcamp.context_processors.link',
+            ],
+        },
+    },
+]
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.markup',
     'django.contrib.staticfiles',
+    'django_markup',
     'aolib',
     'dragorder',
     'chunks',
     'sorl.thumbnail',
-    'south',
     'dropcamp',
-    'django.contrib.admin',
 )
 
 STATIC_ROOT = '/var/www/backcountrypacking/static'
-STATIC_URL = '/static'
+STATIC_URL = '/static/'
 
 CONTACT_EMAIL = 'arolsen@gmail.com'
 

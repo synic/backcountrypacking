@@ -6,8 +6,8 @@ class Image(models.Model):
     image = ImageField(upload_to="dcimages/%Y/%m/%d")
     name = models.SlugField(blank=True, null=True, unique=True)
     title = models.CharField(max_length=100, null=True, blank=True)
-    package = models.ForeignKey('dropcamp.Package', 
-        null=True, blank=True)
+    package = models.ForeignKey('dropcamp.Package',
+        null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return "%s - %s" % (self.name, self.image.url)
@@ -15,7 +15,7 @@ class Image(models.Model):
 class Page(models.Model):
     url = models.SlugField(unique=True)
     title = models.CharField(max_length=200)
-    large_image = models.ForeignKey(Image, null=True, blank=True, 
+    large_image = models.ForeignKey(Image, null=True, blank=True,
         related_name='page_set1', on_delete=models.SET_NULL)
     small_image_1 = models.ForeignKey(Image, null=True, blank=True,
         related_name='page_set2', on_delete=models.SET_NULL)
