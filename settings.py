@@ -10,6 +10,8 @@ ADMINS = (
 ALLOWED_HOSTS = [
     "backcountrypacking.com",
     "www.backcountrypacking.com",
+    "hollowrockoutfitters.com",
+    "www.hollowrockoutfitters.com",
 ]
 
 MANAGERS = ADMINS

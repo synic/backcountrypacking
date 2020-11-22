@@ -2,12 +2,13 @@
 {% load markup_tags %}
 {% load thumbnail %}
 {% load aoutils %}
+{% load static %}
 
 {% block extrahead %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/colorbox/colorbox.css">
-<script type='text/javascript' src="{{ STATIC_URL }}/js/jquery.colorbox-min.js"></script>
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/packages.css">
+<link rel="stylesheet" type="text/css" href="{% static "/css/colorbox/colorbox.css" %}">
+<script type='text/javascript' src="{% static "/js/jquery.colorbox-min.js" %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static "/css/packages.css" %}">
 <script type='text/javascript'>
 $(function() {
 	$('a.photogroup').colorbox({
