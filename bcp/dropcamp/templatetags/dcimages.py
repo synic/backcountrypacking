@@ -1,7 +1,7 @@
 from django import template
 from django.db import models
 
-from dropcamp.models import Image
+from bcp.dropcamp.models import Image
 
 register = template.Library()
 

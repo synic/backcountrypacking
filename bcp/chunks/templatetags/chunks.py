@@ -2,7 +2,7 @@ from django import template
 from django.db import models
 from django.core.cache import cache
 
-from chunks.models import Chunk
+from bcp.chunks.models import Chunk
 
 register = template.Library()
 

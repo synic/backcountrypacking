@@ -3,10 +3,10 @@ from django.urls import include, path, re_path
 from django.contrib import admin
 from django.conf import settings
 
-from dropcamp import views
+from bcp.dropcamp import views
 
 urlpatterns = [
     path('', views.viewpage, {'path': '/home'}, name='index'),
     re_path(r'^.admin/', admin.site.urls),
-    path('', include('dropcamp.urls', namespace='dc')),
+    path('', include('bcp.dropcamp.urls', namespace='dc')),
 ]

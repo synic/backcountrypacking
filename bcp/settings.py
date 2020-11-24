@@ -1,5 +1,14 @@
 # Django settings for dc project.
 
+import os
+from os.path import dirname
+
+import dj_database_url
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.join(dirname(os.path.abspath(__file__)))
+PATHOF = lambda *x: os.path.join(BASE_DIR, *x)  # noqa
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -17,14 +26,9 @@ ALLOWED_HOSTS = [
 MANAGERS = ADMINS
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': './database.db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
+    'default': dj_database_url.config(
+        default='postgres://postgres:bcp@bcp-db/postgres',
+    ),
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -52,7 +56,7 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/home/synic/Projects/bcp/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -68,7 +72,7 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 SECRET_KEY = 'aayjjd6(jq#)58w2d^7k&)9)z&7foooqti!nk_o*k^0w(pf@ah'
 
 STATICFILES_DIRS = (
-    '/var/www/backcountrypacking/staticfiles',
+    PATHOF('staticfiles'),
 )
 
 MIDDLEWARE = [
@@ -81,7 +85,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'backcountrypacking.urls'
+ROOT_URLCONF = 'bcp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -93,15 +97,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'dropcamp.context_processors.link',
+                'bcp.dropcamp.context_processors.link',
             ],
         },
     },
 ]
 
 
-
 INSTALLED_APPS = (
+    # django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -109,15 +113,22 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_markup',
-    'aolib',
-    'chunks',
+
+    # third party
     'sorl.thumbnail',
-    'dropcamp',
+
+    # ours
+    'bcp.aolib',
+    'bcp.chunks',
+    'bcp.dropcamp',
 )
 
-STATIC_ROOT = '/var/www/backcountrypacking/static'
+STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
 STATIC_URL = '/static/'
 
 CONTACT_EMAIL = 'arolsen@gmail.com'
 
-from local_settings import *
+try:
+    from local_settings import *  # noqa
+except ImportError:
+    pass
