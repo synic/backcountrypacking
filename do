@@ -87,8 +87,10 @@ def start(extras):
     if not check_cmd(f'docker inspect --type container {web_container}'):
         run_cmd(
             f'docker run -it -d --network {network} --name {web_container} '
-            f'-p {port}:8001 -v {volume}:/app/ -eDATABASE_URI={db_uri} '
-            f'-e PYTHONPATH=/app '
+            f'-p {port}:8001 -v {volume}:/app/ '
+            f'-eDATABASE_URI={db_uri} '
+            f'-ePYTHONPATH=/app '
+            f'-eBCP_DEV=1 '
             f'{web_image}'
         )
         extras = True
@@ -96,6 +98,7 @@ def start(extras):
         run_cmd(f'docker start {web_container}')
 
     if extras:
+        click.echo('Installing extras...')
         time.sleep(2)
         cnt_cmd(web_container, 'apt update')
         cnt_cmd(web_container, 'apt install --upgrade -y {}'.format(

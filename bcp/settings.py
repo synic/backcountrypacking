@@ -9,7 +9,7 @@ import dj_database_url
 BASE_DIR = os.path.join(dirname(os.path.abspath(__file__)))
 PATHOF = lambda *x: os.path.join(BASE_DIR, *x)  # noqa
 
-DEBUG = True
+DEBUG = os.getenv('BCP_DEV', False) in ('t', 'T', '1', True)
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -22,6 +22,9 @@ ALLOWED_HOSTS = [
     "hollowrockoutfitters.com",
     "www.hollowrockoutfitters.com",
 ]
+
+if os.getenv('BCP_DEV', '') == '1':
+    ALLOWED_HOSTS.append('localhost')
 
 MANAGERS = ADMINS
 
@@ -129,6 +132,6 @@ STATIC_URL = '/static/'
 CONTACT_EMAIL = 'arolsen@gmail.com'
 
 try:
-    from local_settings import *  # noqa
+    from .local_settings import *  # noqa
 except ImportError:
     pass
