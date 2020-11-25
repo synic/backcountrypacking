@@ -3,6 +3,6 @@
 local_settings.py
 database.db
 dcimages
-media/
-static/
+storage/media/
+storage/static/
 .venv
