@@ -28,10 +28,12 @@ if os.getenv('BCP_DEV', '') == '1':
 
 MANAGERS = ADMINS
 
+DATABASE_URI = os.getenv(
+    'DATABASE_URI',
+    'postgres://postgres:bcp@bcp-db/postgres',
+)
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://postgres:bcp@bcp-db/postgres',
-    ),
+    'default': dj_database_url.config(default=DATABASE_URI),
 }
 
 # Local time zone for this installation. Choices can be found here:
