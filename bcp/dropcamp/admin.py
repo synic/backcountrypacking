@@ -1,11 +1,12 @@
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
+
 from . import models
+
 
 class PageAdmin(admin.ModelAdmin):
     list_display = ('url', 'title')
 
-admin.site.register(models.Page, PageAdmin)
 
 class ImageForm(forms.ModelForm):
     class Meta:
@@ -19,16 +20,17 @@ class ImageForm(forms.ModelForm):
 
         return name
 
+
 class ImageAdmin(admin.ModelAdmin):
     list_display = ('name', 'image', 'package')
 
     form = ImageForm
 
-admin.site.register(models.Image, ImageAdmin)
 
 class ImageInline(admin.TabularInline):
     model = models.Image
     form = ImageForm
+
 
 class PackageAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'title', 'type', 'price')
@@ -37,7 +39,6 @@ class PackageAdmin(admin.ModelAdmin):
     ]
     prepopulated_fields = {'slug': ('name',)}
 
-admin.site.register(models.Package, PackageAdmin)
 
 class LinkAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'title', 'url', 'position')
@@ -50,4 +51,8 @@ class LinkAdmin(admin.ModelAdmin):
             'static/admin_list_ordering.js',
         )
 
+
+admin.site.register(models.Image, ImageAdmin)
 admin.site.register(models.Link, LinkAdmin)
+admin.site.register(models.Package, PackageAdmin)
+admin.site.register(models.Page, PageAdmin)

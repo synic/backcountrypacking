@@ -1,9 +1,9 @@
 from django import template
-from django.db import models
 
-from dropcamp.models import Image
+from bcp.dropcamp.models import Image
 
 register = template.Library()
+
 
 class ImageNode(template.Node):
     def __init__(self, name, item_name, nodelist):
@@ -21,6 +21,7 @@ class ImageNode(template.Node):
         output = self.nodelist.render(context)
         context.pop()
         return output
+
 
 @register.tag('dcimage')
 def do_dcimage(parser, token):

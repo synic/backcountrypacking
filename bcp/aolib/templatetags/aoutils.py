@@ -2,9 +2,10 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter('tablerows')
 def tablerows(items, count):
-    items = [i for i in items] # copy the array or queryset
+    items = [i for i in items]  # copy the array or queryset
     while True:
         row = []
         b = False
@@ -15,4 +16,5 @@ def tablerows(items, count):
                 row.append(None)
                 b = True
         yield row
-        if b: break
+        if b:
+            break

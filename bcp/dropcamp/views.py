@@ -1,13 +1,13 @@
-from django.urls import reverse
-from django.shortcuts import get_object_or_404, render
-from django.views.generic import ListView, FormView
-from django.contrib import messages
-from django import http
-
-from . import models
-from . import forms
-
 import re
+
+from django import http
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.views.generic import FormView, ListView
+
+from . import forms, models
+
 
 def viewpage(request, path):
     path = re.sub(r'[^a-zA-Z0-9-]', '', path)
@@ -17,16 +17,20 @@ def viewpage(request, path):
         'page': page,
     })
 
+
 class ContactView(FormView):
     template_name = 'dropcamp/contact.html'
     form_class = forms.ContactForm
 
     def form_valid(self, form):
         form.send()
-        messages.info(self.request,
+        messages.info(
+            self.request,
             "Your message has been sent, we will contact "
-            "you soon.")
+            "you soon."
+        )
         return http.HttpResponseRedirect(reverse('dc:contact'))
+
 
 class PackagesView(ListView):
     def get_queryset(self):

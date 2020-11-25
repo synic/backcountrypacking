@@ -1,32 +1,58 @@
 from django.db import models
-from django.conf import settings
 from sorl.thumbnail import ImageField
+
 
 class Image(models.Model):
     image = ImageField(upload_to="dcimages/%Y/%m/%d")
     name = models.SlugField(blank=True, null=True, unique=True)
     title = models.CharField(max_length=100, null=True, blank=True)
-    package = models.ForeignKey('dropcamp.Package',
-        null=True, blank=True, on_delete=models.SET_NULL)
+    package = models.ForeignKey(
+        'dropcamp.Package',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
 
     def __str__(self):
         return "%s - %s" % (self.name, self.image.url)
 
+
 class Page(models.Model):
     url = models.SlugField(unique=True)
     title = models.CharField(max_length=200)
-    large_image = models.ForeignKey(Image, null=True, blank=True,
-        related_name='page_set1', on_delete=models.SET_NULL)
-    small_image_1 = models.ForeignKey(Image, null=True, blank=True,
-        related_name='page_set2', on_delete=models.SET_NULL)
-    small_image_2 = models.ForeignKey(Image, null=True, blank=True,
-        related_name='page_set3', on_delete=models.SET_NULL)
-    small_image_3 = models.ForeignKey(Image, null=True, blank=True,
-        related_name='page_set4', on_delete=models.SET_NULL)
+    large_image = models.ForeignKey(
+        Image,
+        null=True,
+        blank=True,
+        related_name='page_set1',
+        on_delete=models.SET_NULL,
+    )
+    small_image_1 = models.ForeignKey(
+        Image,
+        null=True,
+        blank=True,
+        related_name='page_set2',
+        on_delete=models.SET_NULL,
+    )
+    small_image_2 = models.ForeignKey(
+        Image,
+        null=True,
+        blank=True,
+        related_name='page_set3',
+        on_delete=models.SET_NULL,
+    )
+    small_image_3 = models.ForeignKey(
+        Image,
+        null=True,
+        blank=True,
+        related_name='page_set4',
+        on_delete=models.SET_NULL,
+    )
     text = models.TextField()
 
     def __str__(self):
         return self.url
+
 
 class Package(models.Model):
     TYPES = (
@@ -50,6 +76,7 @@ class Package(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Link(models.Model):
     name = models.CharField(max_length=100)
