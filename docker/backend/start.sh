@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 BIND="${BIND:-0.0.0.0:8001}"
 GUNICORN_ACCESS_LOG_FORMAT_DEFAULT="%({x-forwarded-for}i)s %(h)s \\\"%(r)s\\\" %(s)s %(D)s %(b)s \\\"%(f)s\\\" \\\"%(a)s\\\""
@@ -9,7 +9,7 @@ echo "Starting up ..."
 django-admin migrate --noinput
 django-admin collectstatic --noinput
 
-for ((;;)); do
+while true; do
     APP_CMD="gunicorn -b ${BIND} --pid ${GUNICORN_PID_FILE} --access-logfile - --access-logformat \"${GUNICORN_ACCESS_LOG_FORMAT}\" bcp.wsgi:application"
 
     if [[ ! -z "$BCP_DEV" ]]; then

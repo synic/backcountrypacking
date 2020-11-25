@@ -1,20 +1,26 @@
-FROM ubuntu:19.10
+FROM python:3.8-alpine
 
 ENV DJANGO_SETTINGS_MODULE bcp.settings
-
-RUN DEBIAN_FRONTEND=noninteractive apt -y update \
-  && apt -y dist-upgrade \
-  && apt -y install python3 python3-dev python3-pip libpq-dev
-
 
 RUN mkdir /app
 WORKDIR /app/
 COPY . /app/
-RUN pip3 install --no-cache-dir -r requirements.txt
 
 # cleanup
 RUN rm -rf .git .gitignore
-RUN apt autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/*
+
+RUN apk add libpq tiff libjpeg libpng
+# the following has to be one line or the cache deletion won't make the image
+# smaller
+RUN apk add --no-cache --virtual .build-deps \
+    gcc \
+    python3-dev \
+    musl-dev \
+    postgresql-dev \
+    jpeg-dev \
+    zlib-dev \
+    libjpeg \
+    && pip install --no-cache-dir -r requirements.txt \
+    && apk del --no-cache .build-deps
 
 CMD ["/app/docker/backend/start.sh"]
