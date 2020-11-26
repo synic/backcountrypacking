@@ -65,7 +65,7 @@ def manage(manage_args):
 
 @cli.command()
 def build():
-    cmd = ['date', '+%Y%m%d']
+    cmd = ['date', '+%Y%m%d%H%M']
     date = subprocess.check_output(cmd).decode('utf8').strip()
     run_cmd(f'docker build --build-arg=DATE={date} --rm -t {web_image} .')
 
