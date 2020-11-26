@@ -1,18 +1,13 @@
 FROM python:3.8-alpine
 
-RUN mkdir /app
-WORKDIR /app/
-COPY . /app/
-
 ENV DJANGO_SETTINGS_MODULE=bcp.settings
 ENV PYTHONPATH=/app
 
-# cleanup
-RUN rm -rf .git .gitignore
+WORKDIR /app
+COPY . /app
 
 RUN apk add libpq tiff libjpeg libpng
-# the following has to be one line or the cache deletion won't make the image
-# smaller
+
 RUN apk add --no-cache --virtual .build-deps \
     gcc \
     python3-dev \
