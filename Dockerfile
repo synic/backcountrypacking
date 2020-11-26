@@ -1,7 +1,5 @@
 FROM python:3.8-alpine
 
-ENV DJANGO_SETTINGS_MODULE bcp.settings
-
 RUN mkdir /app
 WORKDIR /app/
 COPY . /app/

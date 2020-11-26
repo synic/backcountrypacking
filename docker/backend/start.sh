@@ -4,6 +4,8 @@ BIND="${BIND:-0.0.0.0:8001}"
 GUNICORN_ACCESS_LOG_FORMAT_DEFAULT="%({x-forwarded-for}i)s %(h)s \\\"%(r)s\\\" %(s)s %(D)s %(b)s \\\"%(f)s\\\" \\\"%(a)s\\\""
 GUNICORN_PID_FILE="${GUNICORN_PID_FILE:-/var/run/gunicorn.pid}"
 GUNICORN_ACCESS_LOG_FORMAT="${GUNICORN_ACCESS_LOG_FORMAT:-${GUNICORN_ACCESS_LOG_FORMAT_DEFAULT}}"
+DJANGO_SETTINGS_MODULE=bcp.settings
+PYTHONPATH=$PYTHONPATH:/app
 
 echo "Starting up ..."
 django-admin migrate --noinput
