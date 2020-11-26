@@ -4,6 +4,9 @@ RUN mkdir /app
 WORKDIR /app/
 COPY . /app/
 
+ENV DJANGO_SETTINGS_MODULE=bcp.settings
+ENV PYTHONPATH=/app
+
 # cleanup
 RUN rm -rf .git .gitignore
 
