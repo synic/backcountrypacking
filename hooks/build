@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+#  Convert the location "/Dockerfile" to "Dockerfile"
+FILE=$(echo -n $BUILD_PATH | tail -c +2)
+DOCKER_TAG="${DOCKER_TAG:-$SOURCE_BRANCH}"
+
+docker build \
+    --build-arg=COMMIT=$(git rev-parse --short HEAD) \
+    --build-arg=BRANCH=$SOURCE_BRANCH \
+    --build-arg=DATE=$(date '+%Y%m%d') \
+    -t $IMAGE_NAME -f $FILE .

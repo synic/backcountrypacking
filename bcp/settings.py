@@ -133,6 +133,11 @@ STATIC_URL = '/static/'
 
 CONTACT_EMAIL = 'arolsen@gmail.com'
 
+COMMIT_SHA = os.getenv('COMMIT_SHA', 'unknown')
+COMMIT_BRANCH = os.getenv('COMMIT_BRANCH', 'unknown')
+BUILD_DATE = os.getenv('BUILD_DATE', 'unknown')
+BUILD_INFO = f'{COMMIT_BRANCH}:{COMMIT_SHA}@{BUILD_DATE}'
+
 try:
     from .local_settings import *  # noqa
 except ImportError:

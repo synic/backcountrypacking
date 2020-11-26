@@ -11,13 +11,14 @@ web_container = 'bcp-web'
 db_container = 'bcp-db'
 network = 'bcp'
 db_pass = 'bcp'
-db_uri = f'postgres://postgres:{db_pass}@{db_container}/{db_pass}'
+db_name = 'postgres'
+db_uri = f'postgres://postgres:{db_pass}@{db_container}/{db_name}'
 port = os.getenv('PORT', '8001')
 volume = os.getcwd()
 web_image = 'bcp-web-image:latest'
-additional_apt_packages = (
+additional_apk_packages = (
     'vim',
-    'inetutils-ping',
+    'iputils',
     'postgresql-client',
 )
 additional_pip_packages = (
@@ -64,7 +65,9 @@ def manage(manage_args):
 
 @cli.command()
 def build():
-    run_cmd(f'docker build --rm -t {web_image} .')
+    cmd = ['date', '+%Y%m%d']
+    date = subprocess.check_output(cmd).decode('utf8').strip()
+    run_cmd(f'docker build --build-arg=DATE={date} --rm -t {web_image} .')
 
 
 @cli.command()
@@ -100,9 +103,9 @@ def start(extras):
     if extras:
         click.echo('Installing extras...')
         time.sleep(2)
-        cnt_cmd(web_container, 'apt update')
-        cnt_cmd(web_container, 'apt install --upgrade -y {}'.format(
-            ' '.join(additional_apt_packages)))
+        cnt_cmd(web_container, 'apk update')
+        cnt_cmd(web_container, 'apk add {}'.format(
+            ' '.join(additional_apk_packages)))
         cnt_cmd(web_container, 'pip3 install {}'.format(
             ' '.join(additional_pip_packages)))
 

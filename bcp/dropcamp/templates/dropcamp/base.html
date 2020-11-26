@@ -1,44 +1,45 @@
 {% load chunks %}
 {% load static %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
+"http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>{% block title %}{% chunk "page_title" %}{% endblock %}</title>
-<script type='text/javascript' src="https://code.jquery.com/jquery-1.7.min.js"></script>
+  <head>
+    <title>{% block title %}{% chunk "page_title" %}{% endblock %}</title>
+    <script type='text/javascript' src="https://code.jquery.com/jquery-1.7.min.js"></script>
     <script type='text/javascript' src='{% static "/js/base.js" %}'></script>
     <link rel="stylesheet" type="text/css" href="{% static "/css/main.css" %}">
-<link href='https://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
-{% block extrahead %}{% endblock %}
-</head>
-<body>
+    <link href='https://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body>
 
-<div id='main'>
-	<div id='header'>
-		<div id="logo">
-			{% chunk "logo_text" %}
-		</div>
-		{% include 'dropcamp/link_menu.html' %}	
-	</div>
+    <div id='main'>
+      <div id='header'>
+        <div id="logo">
+          {% chunk "logo_text" %}
+        </div>
+        {% include 'dropcamp/link_menu.html' %}	
+      </div>
 
-	{% if messages %}
-	<ul class='messages'>
-		{% for message in messages %}
-			<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-		{% endfor %}
-	</ul>
-	{% endif %}
+      {% if messages %}
+      <ul class='messages'>
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
 
-	<div id='content'>
-		{% block content %}
+      <div id='content'>
+        {% block content %}
 
-		{% endblock %}
-	</div>
+        {% endblock %}
+      </div>
 
-	<div id='footer'>
-		<hr>
-		{% include 'dropcamp/link_menu.html' %}	
-	</div>
-</div>
-</body>
+      <div id='footer'>
+        <hr>
+        {% include 'dropcamp/link_menu.html' %}	
+      </div>
+    </div>
+  </body>
 </html>
+<!-- build "{{ build_info|safe }}" -->
