@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+
+import subprocess
+import sys
+
+web_container = 'bcp-web'
+db_container = 'bcp-db'
+
+
+class Color:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+def check_cmd(cmd, show_output=False):
+    return subprocess.call(
+        cmd.split(),
+        stdout=subprocess.DEVNULL if not show_output else None,
+        stderr=subprocess.DEVNULL if not show_output else None,
+    ) == 0
+
+
+def run_cmd(cmd):
+    print(Color.OKGREEN + cmd + Color.ENDC)
+    check_cmd(cmd, show_output=True)
+
+
+def cnt_cmd(container, cmd):
+    run_cmd(f'docker exec -it {container} {cmd}')
+
+
+def manage(args):
+    cnt_cmd(web_container, 'django-admin {}'.format(' '.join(args)))
+
+
+def bash(args):
+    cnt_cmd(web_container, 'bash')
+
+
+if __name__ == '__main__':
+    argv = sys.argv[1:]
+    cmd = 'manage'
+
+    try:
+        if len(argv) > 0 and callable(globals()[argv[0]]):
+            cmd = argv[0]
+            argv = argv[1:]
+    except KeyError:
+        pass
+
+    globals()[cmd](argv)

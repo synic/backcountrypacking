@@ -1,0 +1,21 @@
+version: "3.3"
+services:
+
+  db:
+    container_name: bcp-db
+    image: postgres:12.5
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_PASSWORD: bcp
+
+  web:
+    container_name: bcp-web
+    build: .
+    ports:
+      - "8001:8001"
+    volumes:
+      - .:/app
+    environment:
+      BCP_DEV: 1
+      DATABASE_URI: postgres://postgres:bcp@bcp-db/postgres
