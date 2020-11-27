@@ -1,4 +1,3 @@
 .gitignore
 .git/
-storage/media/
-storage/static/
+storage/

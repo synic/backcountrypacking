@@ -3,7 +3,7 @@
 SOURCE_BRANCH="${SOURCE_BRANCH:-master}"
 DOCKER_TAG="${DOCKER_TAG:-$SOURCE_BRANCH}"
 
-docker build \
+DOCKER_BUILDKIT=1 docker build \
     --build-arg=COMMIT=$(git rev-parse --short HEAD) \
     --build-arg=BRANCH=$DOCKER_TAG \
     --build-arg=DATE=$(date '+%Y%m%d%H%M') \

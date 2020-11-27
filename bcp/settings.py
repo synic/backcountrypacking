@@ -9,7 +9,8 @@ import dj_database_url
 BASE_DIR = os.path.join(dirname(os.path.abspath(__file__)))
 PATHOF = lambda *x: os.path.join(BASE_DIR, *x)  # noqa
 
-DEBUG = os.getenv('BCP_DEV', False) in ('t', 'T', '1', True)
+BCP_ENV = os.getenv('BCP_ENV', 'production')
+DEBUG = BCP_ENV == 'development'
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -17,13 +18,13 @@ ADMINS = (
 )
 
 ALLOWED_HOSTS = [
-    "backcountrypacking.com",
-    "www.backcountrypacking.com",
-    "hollowrockoutfitters.com",
-    "www.hollowrockoutfitters.com",
+    'backcountrypacking.com',
+    'www.backcountrypacking.com',
+    'hollowrockoutfitters.com',
+    'www.hollowrockoutfitters.com',
 ]
 
-if os.getenv('BCP_DEV', '') == '1':
+if BCP_ENV == 'development':
     ALLOWED_HOSTS.append('localhost')
 
 MANAGERS = ADMINS

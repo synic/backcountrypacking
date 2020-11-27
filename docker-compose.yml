@@ -6,16 +6,26 @@ services:
     image: postgres:12.5
     ports:
       - "5432"
+    volumes:
+      - ./storage/db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: bcp
+      POSTGRES_USER: bcp
+      POSTGRES_DB: bcp
 
   web:
     container_name: bcp-web
-    build: .
+    build:
+      context: .
+      args:
+        BCP_ENV: development
+    image: bcp-web
     ports:
       - "8001:8001"
     volumes:
       - .:/app
+    depends_on:
+      - db
     environment:
-      BCP_DEV: 1
-      DATABASE_URI: postgres://postgres:bcp@bcp-db/postgres
+      BCP_ENV: development
+      DATABASE_URI: postgres://bcp:bcp@bcp-db/bcp

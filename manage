@@ -1,47 +1,53 @@
 #!/usr/bin/env python
 
-import subprocess
+import functools
+import os
 import sys
 
 web_container = 'bcp-web'
 db_container = 'bcp-db'
+os.environ['DOCKER_BUILDKIT'] = '1'
+os.environ['COMPOSE_DOCKER_CLI_BUILD'] = '1'
 
 
-class Color:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+def command(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    wrapper.is_manage_command = True
+    return wrapper
 
 
-def check_cmd(cmd, show_output=False):
-    return subprocess.call(
-        cmd.split(),
-        stdout=subprocess.DEVNULL if not show_output else None,
-        stderr=subprocess.DEVNULL if not show_output else None,
-    ) == 0
+def run(cmd):
+    print(f' -> {cmd}')
+    os.system(f'{cmd}')
 
 
-def run_cmd(cmd):
-    print(Color.OKGREEN + cmd + Color.ENDC)
-    check_cmd(cmd, show_output=True)
+def crun(cmd, container=web_container):
+    run(f'docker exec -it {container} {cmd}')
 
 
-def cnt_cmd(container, cmd):
-    run_cmd(f'docker exec -it {container} {cmd}')
-
-
+@command
 def manage(args):
-    cnt_cmd(web_container, 'django-admin {}'.format(' '.join(args)))
+    crun('django-admin {}'.format(' '.join(args)))
 
 
+@command
 def bash(args):
-    cnt_cmd(web_container, 'bash')
+    crun('bash {}'.format(' '.join(args)))
+
+
+@command
+def start(args):
+    os.system('docker-compose up -d')
+
+
+@command
+def rebuild(args):
+    os.system('docker-compose stop')
+    os.system('docker-compose rm -f')
+    os.system('docker rmi bcp-web')
+    start(args)
 
 
 if __name__ == '__main__':
@@ -49,10 +55,10 @@ if __name__ == '__main__':
     cmd = 'manage'
 
     try:
-        if len(argv) > 0 and callable(globals()[argv[0]]):
+        if globals()[argv[0]].is_manage_command:
             cmd = argv[0]
             argv = argv[1:]
-    except KeyError:
+    except (KeyError, IndexError):
         pass
 
     globals()[cmd](argv)
