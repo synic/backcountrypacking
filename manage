@@ -49,6 +49,7 @@ def rebuild(args):
 
     if '-b' in args:
         os.system('docker-compose build')
+
     start(args)
 
 
