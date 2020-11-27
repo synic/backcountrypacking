@@ -5,4 +5,5 @@ database.db
 dcimages
 storage/media/
 storage/static/
+storage/db/
 .venv

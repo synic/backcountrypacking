@@ -46,7 +46,9 @@ def start(args):
 def rebuild(args):
     os.system('docker-compose stop')
     os.system('docker-compose rm -f')
-    os.system('docker rmi bcp-web')
+
+    if '-b' in args:
+        os.system('docker-compose build')
     start(args)
 
 

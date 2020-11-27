@@ -18,7 +18,7 @@ services:
     build:
       context: .
       args:
-        BCP_ENV: development
+        build_env: development
     image: bcp-web
     ports:
       - "8001:8001"

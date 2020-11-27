@@ -1,15 +1,14 @@
-ARG BRANCH="master"
-ARG COMMIT="head"
-ARG DATE="unknown"
-ARG BCP_ENV="production"
+ARG build_info="head@now"
+ARG build_env="production"
 
 FROM python:3.8-alpine AS base
 
+ARG build_info
+ARG build_env
+
 ENV DJANGO_SETTINGS_MODULE=bcp.settings
 ENV PYTHONPATH=/app
-ENV COMMIT_SHA=${COMMIT}
-ENV COMMIT_BRANCH=${BRANCH}
-ENV BUILD_DATE=${DATE}
+ENV BUILD_INFO=${build_info}
 
 WORKDIR /app
 COPY . /app
@@ -37,5 +36,6 @@ RUN pip3 install --no-cache-dir -r \
     /app/docker/backend/dependencies/development/python.txt
 ENV PS1="bcp-web> "
 
-FROM build-${BCP_ENV} as final
+FROM build-${build_env} as final
+
 CMD ["/app/docker/backend/start.sh"]

@@ -2,9 +2,10 @@
 
 SOURCE_BRANCH="${SOURCE_BRANCH:-master}"
 DOCKER_TAG="${DOCKER_TAG:-$SOURCE_BRANCH}"
+DATE=$(date '+%Y%m%d%H%M')
+COMMIT=$(git rev-parse --short HEAD)
 
-DOCKER_BUILDKIT=1 docker build \
-    --build-arg=COMMIT=$(git rev-parse --short HEAD) \
-    --build-arg=BRANCH=$DOCKER_TAG \
-    --build-arg=DATE=$(date '+%Y%m%d%H%M') \
+DOCKER_BUILDKIT=1 \
+    docker build \
+    --build-arg=build_info="${DOCKER_TAG}:${COMMIT}@${DATE}" \
     -t $IMAGE_NAME .
