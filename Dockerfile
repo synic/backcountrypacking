@@ -13,7 +13,7 @@ ENV BUILD_INFO=${build_info}
 WORKDIR /app
 COPY . /app
 
-RUN apk add libpq tiff libjpeg libpng
+RUN apk add --no-cache libpq tiff libjpeg libpng
 
 RUN apk add --no-cache --virtual .build-deps \
     gcc \
@@ -22,7 +22,6 @@ RUN apk add --no-cache --virtual .build-deps \
     postgresql-dev \
     jpeg-dev \
     zlib-dev \
-    libjpeg \
     && pip install --no-cache-dir -r requirements.txt \
     && apk del --no-cache .build-deps
 
@@ -31,12 +30,12 @@ RUN echo " -> Building production image"
 
 FROM base AS build-development
 RUN echo " -> Building development image"
-RUN cat /app/docker/backend/dependencies/development/apk.txt | xargs apk add
+RUN cat /app/docker/backend/dependencies/development/apk.txt | xargs apk add --no-cache
 RUN pip3 install --no-cache-dir -r \
     /app/docker/backend/dependencies/development/python.txt
 ENV PS1="bcp-web> "
 ENV PYTHONBREAKPOINT=ipdb.set_trace
 
-FROM build-${build_env} as final
+FROM build-${build_env} AS final
 
 CMD ["/app/docker/backend/start.sh"]
