@@ -64,27 +64,30 @@ def crun(cmd, container=None):
     run(f'docker exec -it {container} {cmd}')
 
 
-def run_commands():
-    if len(sys.argv) == 1:
-        sys.argv.append('-h')
+def run_commands(prog='./manage'):
+    parser.prog = prog
+    default = default_command.__name__ if default_command else None
 
-    if len(sys.argv) == 2 and sys.argv[1] in ('-h', '--help'):
-        sys.argv = ['./manage', 'admin']
+    if default:
+        if len(sys.argv) == 2 and sys.argv[1] in ('-h', '--help'):
+            sys.argv = [parser.prog, default]
 
-    try:
-        command = sys.argv[1]
-        if command not in ('-h', '--help') and command not in parsers:
-            sys.argv.insert(1, 'admin')
-    except IndexError:
-        pass
-
-    if default_command:
         try:
-            if sys.argv[1] == 'admin':
+            command = sys.argv[1]
+            if command not in ('-h', '--help') and command not in parsers:
+                sys.argv.insert(1, default)
+        except IndexError:
+            pass
+
+        try:
+            if sys.argv[1] == default:
                 default_command(None, sys.argv[2:])
                 sys.exit(0)
         except IndexError:
             pass
+
+    if len(sys.argv) == 1:
+        sys.argv.append('-h')
 
     args, extras = parser.parse_known_args()
 
