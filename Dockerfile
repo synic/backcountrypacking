@@ -33,7 +33,7 @@ RUN echo " -> Building development image"
 RUN cat /app/docker/backend/dependencies/development/apk.txt | xargs apk add --no-cache
 RUN pip3 install --no-cache-dir -r \
     /app/docker/backend/dependencies/development/python.txt
-ENV PS1="bcp-web> "
+ENV PS1="web> "
 ENV PYTHONBREAKPOINT=ipdb.set_trace
 
 FROM build-${build_env} AS final
