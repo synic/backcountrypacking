@@ -69,6 +69,7 @@ def rebuild(args):
 
     dm.run('docker-compose stop')
     dm.run('docker-compose rm -f')
+    dm.run('docker-compose pull')
 
     if args.build:
         dm.run(f'docker-compose build {no_cache}')
