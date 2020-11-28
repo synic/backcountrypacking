@@ -131,22 +131,26 @@ def main(prog='./manage'):
     command = None
 
     try:
-        command = parsers[args[0]].command_name
-        if command == default:
+        func = parsers[args[0]]
+        if func.passthrough:
             args = args[1:]
+        command = func.command_name
     except (KeyError, IndexError):
         command = default
 
-    if command and len(args):
-        if parsers[command].passthrough:
-            parsers[command](args)
-            sys.exit(0)
+    if command and parsers[command].passthrough:
+        parsers[command](args)
+        sys.exit(0)
 
     if not args:
         parser.print_help(sys.stderr)
         sys.exit(1)
 
-    args = parser.parse_args(args)
+    args, extras = parser.parse_known_args(args)
+
+    if extras:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
 
     if getattr(args, 'func', None):
         args.func(args)

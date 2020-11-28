@@ -14,10 +14,10 @@ def django_admin(args):
     dm.crun('django-admin {}'.format(' '.join(args)))
 
 
-@dm.command()
+@dm.command(passthrough=True)
 def bash(args):
     """Open a bash shell on the web container."""
-    dm.crun('bash')
+    dm.crun('bash {}'.format(' '.join(args)))
 
 
 @dm.command(options=(
