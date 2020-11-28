@@ -9,11 +9,10 @@ web_container = 'bcp-web'
 db_container = 'bcp-db'
 os.environ['DOCKER_BUILDKIT'] = '1'
 os.environ['COMPOSE_DOCKER_CLI_BUILD'] = '1'
-dm.default_container = web_container
 
 
 @dm.command
-def manage(args, extras):
+def admin(args, extras):
     """Run Django admin commands on the web container."""
     dm.crun('django-admin {}'.format(' '.join(extras)))
 
@@ -85,4 +84,6 @@ def resetdb(args, extras):
 
 
 if __name__ == '__main__':
+    dm.default_command = admin
+    dm.default_container = web_container
     dm.run_commands()

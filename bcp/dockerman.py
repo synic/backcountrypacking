@@ -8,6 +8,7 @@ parser = argparse.ArgumentParser(prog='./manage')
 subparsers = parser.add_subparsers()
 parsers = {}
 default_container = ''
+default_command = None
 
 
 def option(*args, **kwargs):
@@ -67,12 +68,23 @@ def run_commands():
     if len(sys.argv) == 1:
         sys.argv.append('-h')
 
+    if len(sys.argv) == 2 and sys.argv[1] in ('-h', '--help'):
+        sys.argv = ['./manage', 'admin']
+
     try:
         command = sys.argv[1]
         if command not in ('-h', '--help') and command not in parsers:
-            sys.argv.insert(1, 'manage')
+            sys.argv.insert(1, 'admin')
     except IndexError:
         pass
+
+    if default_command:
+        try:
+            if sys.argv[1] == 'admin':
+                default_command(None, sys.argv[2:])
+                sys.exit(0)
+        except IndexError:
+            pass
 
     args, extras = parser.parse_known_args()
 
