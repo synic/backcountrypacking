@@ -1,89 +1,139 @@
 #!/usr/bin/env python
 
 import os
-import time
 
 from bcp import dockerman as dm
 
-web_container = 'bcp-web'
-db_container = 'bcp-db'
 os.environ['DOCKER_BUILDKIT'] = '1'
 os.environ['COMPOSE_DOCKER_CLI_BUILD'] = '1'
 
 
-@dm.command
-def admin(args, extras):
+@dm.command(default=True, passthrough=True)
+def django_admin(args):
     """Run Django admin commands on the web container."""
-    dm.crun('django-admin {}'.format(' '.join(extras)))
+    dm.crun('django-admin {}'.format(' '.join(args)))
 
 
-@dm.command
-def bash(args, extras):
+@dm.command()
+def bash(args):
     """Open a bash shell on the web container."""
-    dm.crun('bash {}'.format(' '.join(extras)))
+    dm.crun('bash')
 
 
-@dm.command
-@dm.option(
-    '-b', '--build',
-    action='store_const',
-    dest='build',
-    const=True,
-    default=False,
-    help='Rebuild images',
-)
-def rebuild(args, extras):
+@dm.command(options=(
+    dm.option(
+        '-b', '--build',
+        action='store_true',
+        dest='build',
+        help='Rebuild images',
+    ),
+    dm.option(
+        '--no-cache',
+        action='store_true',
+        dest='no_cache',
+        help='Do not use cache when rebuilding.',
+    ),
+    dm.option(
+        '--force-recreate',
+        action='store_true',
+        dest='force_recreate',
+        help='Recreate containers even if their config has not changed.',
+    ),
+    dm.option(
+        '-d', '--resetdb',
+        action='store_true',
+        dest='resetdb',
+        help='Reset database data',
+    ),
+    dm.option(
+        '-i', '--import',
+        dest='import_file',
+        help='Import SQL file or json dump',
+    ),
+    dm.option(
+        '-n', '--nomigrate',
+        action='store_true',
+        dest='nomigrate',
+        help='Do not automatically run migrations',
+    ),
+))
+def rebuild(args):
     """Remove and rebuild containers."""
+    import_file = dm.file(args.import_file)
+    force_recreate = '--force-recreate' if args.force_recreate else ''
+    no_cache = '--no-cache' if args.no_cache else ''
+
+    if args.resetdb or import_file:
+        dm.run('docker-compose up -d db')
+        dm.crun('find /var/lib/postgresql/data/ -delete > /dev/null', 'db')
+
     dm.run('docker-compose stop')
     dm.run('docker-compose rm -f')
 
     if args.build:
-        dm.run('docker-compose build')
+        dm.run(f'docker-compose build {no_cache}')
 
-    dm.run('docker-compose up -d')
+    dm.run(f'docker-compose up -d {force_recreate} db')
+    dm.info('Waiting for database to be ready.')
+    dm.run('until docker exec db pg_isready ; do sleep 2 ; done')
 
+    if import_file and import_file.fmt == 'sql':
+        dm.run(f'docker exec -i db psql -U bcp -d bcp < {import_file}')
 
-@dm.command
-def debug(args, extras):
-    """Attach to web container for debugging."""
-    dm.run(f'docker attach {web_container}')
-
-
-@dm.command
-@dm.option(
-    '-i', '--import',
-    dest='import_file',
-    help='Import SQL file',
-)
-@dm.option(
-    '-n', '--nomigrate',
-    action='store_const',
-    dest='nomigrate',
-    const=True,
-    default=False,
-    help='Do not automatically run migrations',
-)
-def resetdb(args, extras):
-    """Reset database data."""
-    dm.run(f'docker-compose stop {db_container}')
-    dm.run(f'docker-compose rm -f {db_container}')
-
-    dm.run('sudo rm -rf storage/db')
-    dm.run(f'docker-compose up -d {db_container}')
-    print('Waiting for database to come up...')
-    time.sleep(5)
-
-    if args.import_file:
-        dm.run(
-            f'docker exec -i {db_container} psql -U bcp -d bcp < '
-            f'{args.import_file}'
-        )
-
+    dm.run(f'docker-compose up -d {force_recreate}')
     if not args.nomigrate:
         dm.crun('django-admin migrate')
 
+    if import_file and import_file.fmt == 'json':
+        dm.run(
+            'echo "delete from auth_permission" | '
+            'docker exec -i db psql -U bcp -d bcp'
+        )
+        dm.run(
+            'echo "delete from django_content_type" | '
+            'docker exec -i db psql -U bcp -d bcp'
+        )
+        dm.run(
+            f'docker exec -i web django-admin loaddata --format=json '
+            f'- < {import_file}'
+        )
+
+
+@dm.command(options=(
+    dm.option('import_file', nargs=1, help='Import SQL file or json dump'),
+))
+def load(args):
+    """Import an SQL dump or json file."""
+    import_file = dm.file(args.import_file)
+
+    if import_file and import_file.fmt == 'sql':
+        dm.run(f'docker exec -i db psql -U bcp -d bcp < {import_file}')
+
+    if import_file and import_file.fmt == 'json':
+        dm.run(
+            f'docker exec -i web django-admin loaddata --format=json '
+            f'- < {import_file}'
+        )
+
+
+@dm.command()
+def start(args):
+    """Start all services."""
+    dm.run('docker-compose up -d')
+
+
+@dm.command()
+def stop(args):
+    """Start all services."""
+    dm.run('docker-compose stop')
+
+
+@dm.command()
+def debug(args):
+    """Attach to web container for debugging."""
+    dm.run('docker attach web')
+
 
 if __name__ == '__main__':
-    dm.default_command = admin
-    dm.default_container = web_container
-    dm.run_commands()
+    dm.default_container = 'web'
+    dm.main()

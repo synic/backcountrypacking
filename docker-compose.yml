@@ -1,8 +1,8 @@
 version: "3.3"
 services:
 
-  bcp-db:
-    container_name: bcp-db
+  db:
+    container_name: db
     image: postgres:12.5
     ports:
       - "5432"
@@ -13,8 +13,8 @@ services:
       POSTGRES_USER: bcp
       POSTGRES_DB: bcp
 
-  bcp-web:
-    container_name: bcp-web
+  web:
+    container_name: web
     stdin_open: true
     tty: true
     build:
@@ -27,7 +27,7 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - bcp-db
+      - db
     environment:
       BCP_ENV: development
-      DATABASE_URI: postgres://bcp:bcp@bcp-db/bcp
+      DATABASE_URI: postgres://bcp:bcp@db/bcp

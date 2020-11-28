@@ -11,32 +11,72 @@ default_container = ''
 default_command = None
 
 
-def option(*args, **kwargs):
+class Color(object):
+    debug = '\033[96m'
+    info = '\033[92m'
+    warning = '\033[93m'
+    error = '\033[91m'
+    endc = '\033[0m'
+
+
+class Option(object):
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+
+
+class File(object):
+    def __init__(self, fn):
+        if fn.lower().endswith('.sql'):
+            self.fmt = 'sql'
+        elif fn.lower().endswith('.json'):
+            self.fmt = 'json'
+        else:
+            raise ValueError('Invalid file import extension')
+        self.fn = fn
+
+    def __str__(self):
+        return self.fn
+
+
+def file(fn):
+    return File(fn) if fn else None
+
+
+def command(options=(), passthrough=False, default=False):
     def decorator(func):
+        global default_command
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
 
-        parser = parsers.get(func.__name__)
-        if not parser:
-            parser = subparsers.add_parser(func.__name__, help=func.__doc__)
-            parser.set_defaults(func=func)
-            parsers[func.__name__] = parser
+        name = func.__name__.replace('_', '-')
+        parser = subparsers.add_parser(name, help=func.__doc__)
+        parser.set_defaults(func=func)
 
-        if args or kwargs:
-            parser.add_argument(*args, **kwargs)
+        for option in options:
+            parser.add_argument(*option.args, **option.kwargs)
 
+        wrapper.passthrough = passthrough
+        wrapper.command_name = name
+
+        if default:
+            if default_command:
+                raise ValueError('There can only be one default command.')
+            default_command = wrapper
+
+        parsers[name] = wrapper
         return wrapper
 
     return decorator
 
 
-def command(func):
-    return option()(func)
+option = Option
 
 
 def run(cmd):
-    print(f' -> {cmd}')
+    logcmd(cmd)
     os.system(f'{cmd}')
 
 
@@ -55,8 +95,8 @@ def crun(cmd, container=None):
         pass
 
     if not running:
-        print(
-            f' -> ERROR: The "{container}" container does not appear '
+        error(
+            f'The "{container}" container does not appear '
             'to be running. Try "docker-compose up -d".'
         )
         return
@@ -64,32 +104,49 @@ def crun(cmd, container=None):
     run(f'docker exec -it {container} {cmd}')
 
 
-def run_commands(prog='./manage'):
+def log(msg, color=Color.endc):
+    print(f'{color}{msg}{Color.endc}')
+
+
+def logcmd(msg):
+    log(f' -> {msg}', Color.debug)
+
+
+def info(msg):
+    log(msg, Color.info)
+
+
+def warning(msg):
+    log(msg, Color.warning)
+
+
+def error(msg):
+    log(f'ERROR: {msg}', Color.error)
+
+
+def main(prog='./manage'):
     parser.prog = prog
-    default = default_command.__name__ if default_command else None
+    default = default_command.command_name if default_command else None
+    args = sys.argv[1:]
+    command = None
 
-    if default:
-        if len(sys.argv) == 2 and sys.argv[1] in ('-h', '--help'):
-            sys.argv = [parser.prog, default]
+    try:
+        command = parsers[args[0]].command_name
+        if command == default:
+            args = args[1:]
+    except (KeyError, IndexError):
+        command = default
 
-        try:
-            command = sys.argv[1]
-            if command not in ('-h', '--help') and command not in parsers:
-                sys.argv.insert(1, default)
-        except IndexError:
-            pass
+    if command and len(args):
+        if parsers[command].passthrough:
+            parsers[command](args)
+            sys.exit(0)
 
-        try:
-            if sys.argv[1] == default:
-                default_command(None, sys.argv[2:])
-                sys.exit(0)
-        except IndexError:
-            pass
+    if not args:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
 
-    if len(sys.argv) == 1:
-        sys.argv.append('-h')
-
-    args, extras = parser.parse_known_args()
+    args = parser.parse_args(args)
 
     if getattr(args, 'func', None):
-        args.func(args, extras)
+        args.func(args)
