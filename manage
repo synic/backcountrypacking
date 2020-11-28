@@ -1,67 +1,88 @@
 #!/usr/bin/env python
 
-import functools
 import os
-import sys
+import time
+
+from bcp import dockerman as dm
 
 web_container = 'bcp-web'
 db_container = 'bcp-db'
 os.environ['DOCKER_BUILDKIT'] = '1'
 os.environ['COMPOSE_DOCKER_CLI_BUILD'] = '1'
+dm.default_container = web_container
 
 
-def command(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-    wrapper.is_manage_command = True
-    return wrapper
+@dm.command
+def manage(args, extras):
+    """Run Django admin commands on the web container."""
+    dm.crun('django-admin {}'.format(' '.join(extras)))
 
 
-def run(cmd):
-    print(f' -> {cmd}')
-    os.system(f'{cmd}')
+@dm.command
+def bash(args, extras):
+    """Open a bash shell on the web container."""
+    dm.crun('bash {}'.format(' '.join(extras)))
 
 
-def crun(cmd, container=web_container):
-    run(f'docker exec -it {container} {cmd}')
+@dm.command
+@dm.option(
+    '-b', '--build',
+    action='store_const',
+    dest='build',
+    const=True,
+    default=False,
+    help='Rebuild images',
+)
+def rebuild(args, extras):
+    """Remove and rebuild containers."""
+    dm.run('docker-compose stop')
+    dm.run('docker-compose rm -f')
+
+    if args.build:
+        dm.run('docker-compose build')
+
+    dm.run('docker-compose up -d')
 
 
-@command
-def manage(args):
-    crun('django-admin {}'.format(' '.join(args)))
+@dm.command
+def debug(args, extras):
+    """Attach to web container for debugging."""
+    dm.run(f'docker attach {web_container}')
 
 
-@command
-def bash(args):
-    crun('bash {}'.format(' '.join(args)))
+@dm.command
+@dm.option(
+    '-i', '--import',
+    dest='import_file',
+    help='Import SQL file',
+)
+@dm.option(
+    '-n', '--nomigrate',
+    action='store_const',
+    dest='nomigrate',
+    const=True,
+    default=False,
+    help='Do not automatically run migrations',
+)
+def resetdb(args, extras):
+    """Reset database data."""
+    dm.run(f'docker-compose stop {db_container}')
+    dm.run(f'docker-compose rm -f {db_container}')
 
+    dm.run('sudo rm -rf storage/db')
+    dm.run(f'docker-compose up -d {db_container}')
+    print('Waiting for database to come up...')
+    time.sleep(5)
 
-@command
-def start(args):
-    os.system('docker-compose up -d')
+    if args.import_file:
+        dm.run(
+            f'docker exec -i {db_container} psql -U bcp -d bcp < '
+            f'{args.import_file}'
+        )
 
-
-@command
-def rebuild(args):
-    os.system('docker-compose stop')
-    os.system('docker-compose rm -f')
-
-    if '-b' in args:
-        os.system('docker-compose build')
-
-    start(args)
+    if not args.nomigrate:
+        dm.crun('django-admin migrate')
 
 
 if __name__ == '__main__':
-    argv = sys.argv[1:]
-    cmd = 'manage'
-
-    try:
-        if globals()[argv[0]].is_manage_command:
-            cmd = argv[0]
-            argv = argv[1:]
-    except (KeyError, IndexError):
-        pass
-
-    globals()[cmd](argv)
+    dm.run_commands()
