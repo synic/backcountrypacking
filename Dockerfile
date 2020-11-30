@@ -13,9 +13,12 @@ ENV BUILD_INFO=${build_info}
 WORKDIR /app
 COPY . /app
 
-RUN apk add --no-cache libpq tiff libjpeg libpng
-
-RUN apk add --no-cache --virtual .build-deps \
+RUN apk add --no-cache \
+    libpq \
+    tiff \
+    libjpeg \
+    libpng \
+    && apk add --no-cache --virtual .build-deps \
     gcc \
     python3-dev \
     musl-dev \
@@ -29,10 +32,13 @@ FROM base AS build-production
 RUN echo " -> Building production image"
 
 FROM base AS build-development
-RUN echo " -> Building development image"
-RUN cat /app/docker/backend/dependencies/development/apk.txt | xargs apk add --no-cache
-RUN pip3 install --no-cache-dir -r \
+RUN echo " -> Building development image" \
+    && cat \
+    /app/docker/backend/dependencies/development/apk.txt \
+    | xargs apk add --no-cache \
+    && pip3 install --no-cache-dir -r \
     /app/docker/backend/dependencies/development/python.txt
+
 ENV PS1="web> "
 ENV PYTHONBREAKPOINT=ipdb.set_trace
 
