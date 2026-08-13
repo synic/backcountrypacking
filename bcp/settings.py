@@ -75,7 +75,7 @@ MEDIA_URL = '/media/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'aayjjd6(jq#)58w2d^7k&)9)z&7foooqti!nk_o*k^0w(pf@ah'
+SECRET_KEY = ''
 
 STATICFILES_DIRS = (
     PATHOF('staticfiles'),
@@ -132,7 +132,7 @@ INSTALLED_APPS = (
 STATIC_ROOT = os.path.join(BASE_DIR, '..', 'storage', 'static')
 STATIC_URL = '/static/'
 
-CONTACT_EMAIL = 'arolsen@gmail.com'
+CONTACT_EMAIL = ''
 
 BUILD_INFO = os.getenv('BUILD_INFO', 'head@now')
 
