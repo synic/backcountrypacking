@@ -6,5 +6,6 @@ DATE=$(date '+%Y%m%d%H%M')
 COMMIT=$(git rev-parse --short HEAD)
 
 DOCKER_BUILDKIT=1 docker build \
-    --build-arg=build_info="${DOCKER_TAG}:${COMMIT}@${DATE}" \
+    -f Dockerfile.staticsite \
     -t $IMAGE_NAME .
+

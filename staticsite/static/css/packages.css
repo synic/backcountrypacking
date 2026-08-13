@@ -1,0 +1,61 @@
+.package_first_image {
+    margin-right: 10px;
+}
+
+.package_cell_1 {
+    margin-bottom: 20px;
+    min-height: 122px;
+    cursor: pointer;
+    width: 185px;
+}
+
+.package_text {
+}
+
+#package_right_content p {
+    margin-top: 0;
+}
+
+.package_images {
+}
+
+.package_images td {
+    padding-right: 4px;
+    padding-bottom: 4px;
+    vertical-align: top;
+}
+
+#package_left_content {
+    width: 310px;
+    float: left;
+}
+
+#package_right_content {
+    float: left;
+    width: 650px;
+}
+
+#package_right_content h2 {
+    margin-top: 0px;
+}
+
+#image_top {
+    margin-top: 100px;
+}
+
+#package_image_container {
+    clear: both;
+    padding-top: 40px;
+}
+
+.package_list_image_container {
+    width: 185px;
+    display: block;
+}
+
+#packages_table td {
+    padding-bottom: 40px;
+    cursor: pointer;
+}
+
+
