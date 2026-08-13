@@ -2,7 +2,7 @@
 *.pyo
 local_settings.py
 database.db
-dcimages
+storage/media/dcimages
 storage/media/
 storage/static/
 storage/db/
