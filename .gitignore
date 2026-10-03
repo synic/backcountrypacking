@@ -7,3 +7,5 @@ storage/media/
 storage/static/
 storage/db/
 .venv
+.env
+.envrc
